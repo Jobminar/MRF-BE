@@ -28,6 +28,23 @@ const stockUpdateController={
             console.log(error)
             res.status(500).json({error:"Failed to get the data"})
         }
+    },
+    deleteStock:async(req,res)=>{
+   
+        try{
+        const {id}=req.params
+        const removeItem=await StockUpdate.findByIdAndDelete(id)
+
+        if(!removeItem){
+            return res.status(400).json({message:"user not found"})
+        }
+        res.status(200).json({message:"deleted successfully"})
+        }
+        catch(error){
+            res.status(500).json({error:"Delete failed "})
+        }
+
+
     }
 
 }

@@ -13,7 +13,7 @@ const userController = {
 
       const existingUser = await User.findOne({ phone });
       if (existingUser) {
-        return res.status(401).json({ message: "User already exists" });
+        return res.status(409).json({ message: "User already exists" });
       }
 
       const hashedPassword = await argon2.hash(password, 10);

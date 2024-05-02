@@ -4,20 +4,20 @@ import argon2 from "argon2";
 const adminController = {
   signup: async (req, res) => {
     try {
-      const { email, password } = req.body;
+      const { phone, password } = req.body;
 
-      if (!email || !password) {
+      if (!phone || !password) {
         return res
           .status(400)
           .json({ message: "Required fields is missing !!" });
       }
 
-      const existingUser = await Admin.findOne({ email });
+      const existingUser = await Admin.findOne({ phone });
       if (existingUser) {
         return res.status(400).json({ message: "Already existing admin" });
       }
       const hashedPassword = await argon2.hash(password, 10);
-      const newAdmin = new Admin({ email, password: hashedPassword });
+      const newAdmin = new Admin({ phone, password: hashedPassword });
       await newAdmin.save();
       res.status(201).json({ message: "signup admin successfully" });
     } catch (error) {
@@ -27,15 +27,15 @@ const adminController = {
   },
   login: async (req, res) => {
     try {
-      const { email, password } = req.body;
+      const { phone, password } = req.body;
 
-      if (!email || !password) {
+      if (!phone || !password) {
         return res
           .status(400)
           .json({ message: "Required fields is missing !! " });
       }
 
-      const admin = await Admin.findOne({ email });
+      const admin = await Admin.findOne({ phone });
       if (!admin) {
         return res.status(404).json({ message: "Admin not found !!" });
       }

@@ -13,7 +13,7 @@ const vehicleController = {
         !location ||
         !amount
       ) {
-        return res.status(201).json({ message: "Required fields issing !!" });
+        return res.status(400).json({ error: "Required fields are missing" });
       }
       const newVehicle = new Vehicle({
         date,
@@ -24,9 +24,10 @@ const vehicleController = {
         amount,
       });
       await newVehicle.save();
-      res.status(201).json({ message: "Successfully data added" });
+      res.status(201).json({ message: "Successfully added data" });
     } catch (error) {
-      res.status(500).json({ error: "Internal server" });
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
     }
   },
   getAllVehicle: async (req, res) => {
@@ -34,8 +35,10 @@ const vehicleController = {
       const getData = await Vehicle.find();
       res.status(200).json(getData);
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: "Failed to get the data" });
     }
   },
 };
+
 export default vehicleController;

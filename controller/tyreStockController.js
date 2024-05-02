@@ -3,12 +3,12 @@ const tyreStockController={
 
     createTyre:async(req,res)=>{
         try{
-        const {date,tyreSize,comment,quantity,SSP,location,amount}=req.body
-        if(!date || !tyreSize || !comment || !quantity || !SSP || !location || !amount){
+        const {date,tyreSize,comment,vehicle,location,amount,noOfTyres}=req.body
+        if(!date || !tyreSize || !comment || !vehicle  || !location || !amount || !noOfTyres){
             return res.status(400).json({message:"Required fields missing !! date tyreSize comment quantity SSP location"})
         }
 
-        const newTyre=new Tyre({date,tyreSize,comment,quantity,SSP,location,amount})
+        const newTyre=new Tyre({date,tyreSize,comment,vehicle,location,amount,noOfTyres})
          await newTyre.save()
          res.status(201).json({message:"Successfully data added"})
 

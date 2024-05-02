@@ -16,7 +16,7 @@ const userController = {
         return res.status(409).json({ message: "User already exists" });
       }
 
-      const hashedPassword = await argon2.hash(password, 10);
+      const hashedPassword = await argon2.hash(password);
       const newUser = new User({ name, phone, password: hashedPassword });
       await newUser.save();
 
@@ -36,7 +36,7 @@ const userController = {
         return res.status(401).json({ message: "User not found" });
       }
 
-      const passwordMatch = await argon2.compare(password, user.password);
+      const passwordMatch = await argon2.verify(user.password, password);
       if (!passwordMatch) {
         return res.status(401).json({ message: "Invalid password" });
       }

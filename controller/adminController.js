@@ -40,7 +40,7 @@ const adminController = {
         return res.status(404).json({ message: "Admin not found !!" });
       }
 
-      const isValidPassword = await argon2.compare(password, admin.password);
+      const isValidPassword = await argon2.verify(password, admin.password);
       if (!isValidPassword) {
         return res.status(401).json({ message: "Invalid password " });
       }
@@ -48,13 +48,11 @@ const adminController = {
       const token = jwt.sign({ userId: admin._id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-      res
-        .status(200)
-        .json({
-          message: "Login admin successfully",
-          adminId: admin._id,
-          token,
-        });
+      res.status(200).json({
+        message: "Login admin successfully",
+        adminId: admin._id,
+        token,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Failed to login" });

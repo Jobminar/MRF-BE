@@ -1,6 +1,6 @@
 import Admin from "../model/adminModel.js";
 import jwt from 'jsonwebtoken'
-import bcrypt from "bcrypt";
+import argon2 from "argon2";
 const adminController = {
   signup: async (req, res) => {
     try {
@@ -16,7 +16,7 @@ const adminController = {
       if (existingUser) {
         return res.status(400).json({ message: "Already existing admin" });
       }
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await argon2.hash(password, 10);
       const newAdmin = new Admin({ email, password: hashedPassword });
       await newAdmin.save();
       res.status(201).json({ message: "signup admin successfully" });
@@ -38,7 +38,7 @@ const adminController = {
            return res.status(404).json({ message: "Admin not found !!" });
         }
 
-      const isValidPassword = await bcrypt.compare(password, admin.password);
+      const isValidPassword = await argon2.compare(password, admin.password);
       if (!isValidPassword) {
            return res.status(401).json({ message: "Invalid password " });
          }

@@ -46,7 +46,7 @@ const adminController = {
       }
 
       const token = jwt.sign({ userId: admin._id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
+        expiresIn: "24h",
       });
       res.status(200).json({
         message: "Login admin successfully",

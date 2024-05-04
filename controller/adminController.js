@@ -6,6 +6,7 @@ const adminController = {
   signup: async (req, res) => {
     try {
       const { phone, password } = req.body;
+      console.log("Received request body:", req.body);
 
       if (!phone || !password) {
         console.error("Phone and password are required");

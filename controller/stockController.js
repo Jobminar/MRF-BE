@@ -2,9 +2,11 @@ import StockReport from "../model/stockReport.js";
 import authMiddleware from "./authMiddleware.js"; // Import the authMiddleware
 
 const stockController = {
+  verifyToken: authMiddleware, // Middleware to verify JWT token
+
   addStock: async (req, res) => {
     try {
-      authMiddleware(req, res, async () => {
+      stockController.verifyToken(req, res, async () => {
         const { date, tyreSize, quantity, comment, SSP, location } = req.body;
 
         let stockReport = await StockReport.findOne({
@@ -44,7 +46,7 @@ const stockController = {
 
   sellTyresFromStock: async (req, res) => {
     try {
-      authMiddleware(req, res, async () => {
+      stockController.verifyToken(req, res, async () => {
         const { date, tyreSize, quantity } = req.body;
 
         let stockReport = await StockReport.findOne({
@@ -85,7 +87,7 @@ const stockController = {
 
   getClosedStock: async (req, res) => {
     try {
-      authMiddleware(req, res, async () => {
+      stockController.verifyToken(req, res, async () => {
         const { date } = req.params;
 
         const stockReport = await StockReport.findOne({

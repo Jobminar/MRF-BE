@@ -47,7 +47,7 @@ const stockController = {
   sellTyresFromStock: async (req, res) => {
     try {
       stockController.verifyToken(req, res, async () => {
-        const { date, tyreSize, quantity } = req.body;
+        const { date, tyreSize, quantity, comment, SSP, location } = req.body;
 
         let stockReport = await StockReport.findOne({
           date,
@@ -72,6 +72,14 @@ const stockController = {
           }
 
           stockReport.existingStock[existingItemIndex].quantity -= quantity;
+          stockReport.sales.push({
+            date,
+            tyreSize,
+            comment,
+            quantity,
+            SSP,
+            location,
+          });
           await stockReport.save();
 
           res.status(200).json({ message: "Stock updated successfully" });

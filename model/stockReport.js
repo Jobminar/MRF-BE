@@ -20,7 +20,7 @@ const stockItemSchema = new Schema({
     default: 0,
   },
   SSP: {
-    type: Number,
+    type: String,
     default: 0,
   },
   location: {

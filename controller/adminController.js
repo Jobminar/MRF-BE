@@ -27,8 +27,10 @@ const adminController = {
       console.log("Admin signup successful");
       res.status(201).json({ message: "Admin signup successful" });
     } catch (error) {
-      console.error("Failed to signup admin:", error);
-      res.status(500).json({ error: "Failed to signup admin" });
+      console.error("Failed to signup admin:", error.message);
+      res
+        .status(500)
+        .json({ error: "Failed to signup admin", message: error.message });
     }
   },
 

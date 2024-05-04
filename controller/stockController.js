@@ -1,6 +1,5 @@
 import StockReport from "../model/stockReport.js";
-import SalesReport from "../model/salesReport.js";
-import jwt from "jsonwebtoken";
+
 import authMiddleware from "./authMiddleware.js";
 
 const stockController = {

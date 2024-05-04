@@ -1,15 +1,18 @@
 import SalesReport from "../model/salesReport.js";
 import StockReport from "../model/stockReport.js";
-
 import authMiddleware from "./authMiddleware.js";
 
 const salesController = {
-  verifyToken: authMiddleware, // Use authMiddleware for token verification
+  // Middleware to verify JWT token
+  verifyToken: authMiddleware,
 
+  // Get sales report for a specific date
+  // GET /api/sales/:date
   getSalesReportByDate: async (req, res) => {
     try {
       const { date } = req.params;
 
+      // Find the sales report for the given date
       const salesReport = await SalesReport.findOne({ date });
 
       if (!salesReport) {
@@ -25,18 +28,19 @@ const salesController = {
     }
   },
 
+  // Add a new sales report
+  // POST /api/sales
   addSalesReport: async (req, res) => {
     try {
-      const { date, numberOfTyres, numberOfVehicles, amount } = req.body;
-      if (!date || !numberOfTyres || !numberOfVehicles || !amount) {
+      const { date, numberOfTyres, comment, quantity, SSP } = req.body;
+      if (!date || !numberOfTyres || !comment || !quantity || !SSP) {
         return res.status(400).json({ message: "Required fields are missing" });
       }
 
+      // Create a new sales report
       const salesReport = new SalesReport({
         date,
-        numberOfTyres,
-        numberOfVehicles,
-        amount,
+        sales: [{ date, numberOfTyres, comment, quantity, SSP }],
       });
       await salesReport.save();
 
@@ -51,8 +55,9 @@ const salesController = {
       stockReport.sales.push({
         date,
         numberOfTyres,
-        numberOfVehicles,
-        amount,
+        comment,
+        quantity,
+        SSP,
       });
       await stockReport.save();
 
@@ -63,5 +68,12 @@ const salesController = {
     }
   },
 };
+
+// Add authMiddleware as a middleware for all salesController methods
+Object.keys(salesController).forEach((key) => {
+  if (typeof salesController[key] === "function") {
+    salesController[key] = [authMiddleware, salesController[key]];
+  }
+});
 
 export default salesController;

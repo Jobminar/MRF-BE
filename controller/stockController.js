@@ -1,113 +1,103 @@
 import StockReport from "../model/stockReport.js";
-
-import authMiddleware from "./authMiddleware.js";
+import authMiddleware from "./authMiddleware.js"; // Import the authMiddleware
 
 const stockController = {
-  verifyToken: authMiddleware, // Use authMiddleware for token verification
-
-  getOpenStockReport: async (req, res) => {
+  addStock: async (req, res) => {
     try {
-      const currentDate = new Date();
-      currentDate.setHours(0, 0, 0, 0);
+      authMiddleware(req, res, async () => {
+        const { date, tyreSize, quantity } = req.body;
 
-      const previousDate = new Date(currentDate);
-      previousDate.setDate(previousDate.getDate() - 1);
-
-      const openStockReport = await StockReport.findOne({
-        date: previousDate,
-        status: "existing-stock",
-      });
-
-      if (!openStockReport) {
-        return res.status(404).json({
-          message: "Open stock report not found for the previous day",
+        let stockReport = await StockReport.findOne({
+          date,
+          status: "existing-stock",
         });
-      }
 
-      res.status(200).json(openStockReport);
+        if (!stockReport) {
+          stockReport = new StockReport({ date, status: "existing-stock" });
+        }
+
+        const existingItemIndex = stockReport.existingStock.findIndex(
+          (item) => item.tyreSize === tyreSize,
+        );
+
+        if (existingItemIndex !== -1) {
+          stockReport.existingStock[existingItemIndex].quantity += quantity;
+        } else {
+          stockReport.existingStock.push({ tyreSize, quantity });
+        }
+
+        await stockReport.save();
+
+        res.status(200).json({ message: "Stock updated successfully" });
+      });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Failed to get open stock report" });
+      res.status(500).json({ error: "Failed to update stock" });
     }
   },
 
-  getStockReportByStatus: async (req, res) => {
+  sellTyresFromStock: async (req, res) => {
     try {
-      const { status } = req.params;
+      authMiddleware(req, res, async () => {
+        const { date, tyreSize, quantity } = req.body;
 
-      const stockReports = await StockReport.find({ status });
+        let stockReport = await StockReport.findOne({
+          date,
+          status: "existing-stock",
+        });
 
-      res.status(200).json(stockReports);
+        if (!stockReport) {
+          return res.status(404).json({ message: "Stock not found" });
+        }
+
+        const existingItemIndex = stockReport.existingStock.findIndex(
+          (item) => item.tyreSize === tyreSize,
+        );
+
+        if (existingItemIndex !== -1) {
+          if (
+            stockReport.existingStock[existingItemIndex].quantity < quantity
+          ) {
+            return res
+              .status(400)
+              .json({ message: "Not enough stock available" });
+          }
+
+          stockReport.existingStock[existingItemIndex].quantity -= quantity;
+          await stockReport.save();
+
+          res.status(200).json({ message: "Stock updated successfully" });
+        } else {
+          res.status(404).json({ message: "Tyre size not found in stock" });
+        }
+      });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Failed to get stock reports" });
+      res.status(500).json({ error: "Failed to update stock" });
     }
   },
 
-  startSales: async (req, res) => {
+  getClosedStock: async (req, res) => {
     try {
-      const { date, numberOfTyres, numberOfVehicles, amount } = req.body;
-      if (!date || !numberOfTyres || !numberOfVehicles || !amount) {
-        return res.status(400).json({ message: "Required fields are missing" });
-      }
+      authMiddleware(req, res, async () => {
+        const { date } = req.params;
 
-      // Find or create the stock report for the current date
-      let stockReport = await StockReport.findOne({
-        date,
-        status: "existing-stock",
+        const stockReport = await StockReport.findOne({
+          date,
+          status: "closed-stock",
+        });
+
+        if (!stockReport) {
+          return res.status(404).json({
+            message: "Closed-stock report not found for the given date",
+          });
+        }
+
+        res.status(200).json(stockReport);
       });
-      if (!stockReport) {
-        stockReport = new StockReport({ date, status: "existing-stock" });
-      }
-
-      // Update the existing stock report
-      stockReport.existingStock.push({
-        date,
-        numberOfTyres,
-        numberOfVehicles,
-        amount,
-      });
-      await stockReport.save();
-
-      res.status(200).json({ message: "Sales started successfully" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Failed to start sales" });
-    }
-  },
-
-  stopSales: async (req, res) => {
-    try {
-      const { date, numberOfTyres, numberOfVehicles, amount } = req.body;
-      if (!date || !numberOfTyres || !numberOfVehicles || !amount) {
-        return res.status(400).json({ message: "Required fields are missing" });
-      }
-
-      // Find the existing stock report for the current date
-      const stockReport = await StockReport.findOne({
-        date,
-        status: "existing-stock",
-      });
-      if (!stockReport) {
-        return res
-          .status(404)
-          .json({ message: "Existing stock report not found" });
-      }
-
-      // Update the existing stock report
-      stockReport.closedStock.push({
-        date,
-        numberOfTyres,
-        numberOfVehicles,
-        amount,
-      });
-      stockReport.status = "closed-stock";
-      await stockReport.save();
-
-      res.status(200).json({ message: "Sales stopped successfully" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to stop sales" });
+      res.status(500).json({ error: "Failed to get closed-stock report" });
     }
   },
 };

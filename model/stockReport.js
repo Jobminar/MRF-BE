@@ -3,19 +3,11 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const stockItemSchema = new Schema({
-  date: {
-    type: Date,
+  tyreSize: {
+    type: String,
     required: true,
   },
-  amount: {
-    type: Number,
-    required: true,
-  },
-  numberOfTyres: {
-    type: Number,
-    required: true,
-  },
-  numberOfVehicles: {
+  quantity: {
     type: Number,
     required: true,
   },
@@ -37,24 +29,23 @@ const stockReportSchema = new Schema({
   },
   sales: [
     {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+      location: {
+        type: String,
         required: true,
       },
       date: {
         type: Date,
         required: true,
       },
-      numberOfTyres: {
+      tyreSize: {
+        type: String,
+        required: true,
+      },
+      quantity: {
         type: Number,
         required: true,
       },
-      numberOfVehicles: {
-        type: Number,
-        required: true,
-      },
-      amount: {
+      SSP: {
         type: Number,
         required: true,
       },

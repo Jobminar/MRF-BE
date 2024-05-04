@@ -5,11 +5,11 @@ import vehicleController from "../controller/vehicleController.js";
 import adminController from "../controller/adminController.js";
 import userController from "../controller/userController.js";
 import stockController from "../controller/stockController.js";
-
+import authMiddleware from "../controller//authMiddleware.js";
 import salesController from "../controller/salesController.js";
 
 const router = express.Router();
-
+router.use(authMiddleware);
 router.post("/admin/signup", adminController.signup);
 router.post("/admin/login", adminController.login);
 

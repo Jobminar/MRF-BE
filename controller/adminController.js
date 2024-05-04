@@ -15,12 +15,6 @@ const adminController = {
           .json({ message: "Phone and password are required" });
       }
 
-      const existingUser = await Admin.findOne({ phone });
-      if (existingUser) {
-        console.error("Admin already exists");
-        return res.status(400).json({ message: "Admin already exists" });
-      }
-
       const hashedPassword = await argon2.hash(password);
       const newAdmin = new Admin({ phone, password: hashedPassword });
       await newAdmin.save();

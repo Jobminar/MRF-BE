@@ -3,12 +3,28 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const stockItemSchema = new Schema({
+  date: {
+    type: Date,
+    default: new Date().toISOString().split("T")[0],
+  },
+  comment: {
+    type: String,
+    default: "",
+  },
   tyreSize: {
     type: String,
-    required: true,
+    default: "",
   },
   quantity: {
     type: Number,
+    default: 0,
+  },
+  SSP: {
+    type: Number,
+    default: 0,
+  },
+  location: {
+    type: String,
     required: true,
   },
 });

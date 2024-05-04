@@ -5,7 +5,7 @@ const stockController = {
   addStock: async (req, res) => {
     try {
       authMiddleware(req, res, async () => {
-        const { date, tyreSize, quantity } = req.body;
+        const { date, tyreSize, quantity, comment, SSP, location } = req.body;
 
         let stockReport = await StockReport.findOne({
           date,
@@ -23,7 +23,13 @@ const stockController = {
         if (existingItemIndex !== -1) {
           stockReport.existingStock[existingItemIndex].quantity += quantity;
         } else {
-          stockReport.existingStock.push({ tyreSize, quantity });
+          stockReport.existingStock.push({
+            tyreSize,
+            quantity,
+            comment,
+            SSP,
+            location,
+          });
         }
 
         await stockReport.save();

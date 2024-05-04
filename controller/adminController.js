@@ -8,6 +8,7 @@ const adminController = {
       const { phone, password } = req.body;
 
       if (!phone || !password) {
+        console.error("Phone and password are required");
         return res
           .status(400)
           .json({ message: "Phone and password are required" });
@@ -15,15 +16,17 @@ const adminController = {
 
       const existingUser = await Admin.findOne({ phone });
       if (existingUser) {
+        console.error("Admin already exists");
         return res.status(400).json({ message: "Admin already exists" });
       }
 
       const hashedPassword = await argon2.hash(password);
       const newAdmin = new Admin({ phone, password: hashedPassword });
       await newAdmin.save();
+      console.log("Admin signup successful");
       res.status(201).json({ message: "Admin signup successful" });
     } catch (error) {
-      console.error(error);
+      console.error("Failed to signup admin:", error);
       res.status(500).json({ error: "Failed to signup admin" });
     }
   },

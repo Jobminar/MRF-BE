@@ -19,9 +19,10 @@ router.delete("/delete/:id", stockUpdateController.deleteStock);
 
 router.post("/post-tyres", tyreStockController.createTyre);
 router.get("/get-tyres", tyreStockController.getAllTyres);
-router.delete("/delete-item/:id", tyreStockController.deleteTyre);
+router.put("/update-tyre/:date", tyreStockController.updateTyre); // Update tyre route
 
 router.post("/post-vehicle", vehicleController.createVehicle);
 router.get("/get-vehicle", vehicleController.getAllVehicle);
+router.put("/update-vehicle/:date", vehicleController.updateVehicle); // Update vehicle route
 
 export default router;

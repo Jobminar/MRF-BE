@@ -6,7 +6,7 @@ const salesReportSchema = new Schema({
   sales: [
     {
       date: { type: Date, required: true },
-      numberOfTyres: { type: Number, required: true },
+      tyreSize: { type: Number, required: true },
       comment: { type: String },
       quantity: { type: String },
       SSP: { type: String },

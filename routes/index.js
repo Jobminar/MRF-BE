@@ -27,6 +27,7 @@ router.put("/update-vehicle/:date", vehicleController.updateVehicle); // Update 
 router.post("/add-stock", stockController.addStock); // Add new tires to the stock
 router.post("/sell-stock", stockController.sellTyresFromStock); // Reduce stock based on sales
 router.get("/closed-stock/:date", stockController.getClosedStock); // Get closed stock report
+router.get("/open-stock/:date", stockController.getOpenStock); // Get open stock report
 
 // Routes for sales reports
 router.get("/sales-report/:date", salesController.getSalesReportByDate);

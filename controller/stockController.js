@@ -116,6 +116,51 @@ const stockController = {
       res.status(500).json({ error: "Failed to get closed-stock report" });
     }
   },
+  getOpenStock: async (req, res) => {
+    try {
+      stockController.verifyToken(req, res, async () => {
+        const { date } = req.params;
+
+        let openStockReport = await StockReport.findOne({
+          date,
+          status: "open-stock",
+        });
+
+        if (!openStockReport) {
+          // If there is no open stock report for the given date, find the latest closed stock report and change its status to open-stock
+          const latestClosedStockReport = await StockReport.findOne({
+            status: "closed-stock",
+          }).sort({ date: -1 });
+
+          if (latestClosedStockReport) {
+            latestClosedStockReport.status = "open-stock";
+            await latestClosedStockReport.save();
+
+            openStockReport = latestClosedStockReport;
+          } else {
+            // If there are no closed stock reports, display the existing stock
+            const existingStockReport = await StockReport.findOne({
+              date,
+              status: "existing-stock",
+            });
+
+            if (!existingStockReport) {
+              return res.status(404).json({
+                message: "No existing stock found for the given date",
+              });
+            }
+
+            return res.status(200).json(existingStockReport);
+          }
+        }
+
+        res.status(200).json(openStockReport);
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to get open-stock report" });
+    }
+  },
 };
 
 export default stockController;

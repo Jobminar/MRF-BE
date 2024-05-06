@@ -44,7 +44,7 @@ const userController = {
       const token = jwt.sign(
         { id: user._id, phone: user.phone },
         process.env.JWT_SECRET,
-        { expiresIn: "24h" },
+        { expiresIn: "23h" },
       );
 
       res.status(200).json({ token });

@@ -43,13 +43,22 @@ const salesController = {
   // POST /api/sales
   addSalesReport: async (req, res) => {
     try {
-      const { date, tyreSize, comment, quantity, SSP, vehicle, location } =
-        req.body;
+      const {
+        date,
+        tyreSize,
+        comment,
+        quantity,
+        amount,
+        SSP,
+        vehicle,
+        location,
+      } = req.body;
       if (
         !date ||
         !tyreSize ||
         !comment ||
         !quantity ||
+        !amount ||
         !SSP ||
         !vehicle ||
         !location
@@ -64,7 +73,9 @@ const salesController = {
       const salesReport = new SalesReport({
         date,
         user: userId, // Set the user reference
-        sales: [{ tyreSize, comment, quantity, SSP, vehicle, location }],
+        sales: [
+          { tyreSize, comment, quantity, amount, SSP, vehicle, location },
+        ],
       });
       await salesReport.save();
 
@@ -81,6 +92,7 @@ const salesController = {
         tyreSize,
         comment,
         quantity,
+        amount,
         SSP,
         vehicle,
         location,

@@ -67,7 +67,7 @@ const salesController = {
       }
 
       // Get the user ID from the JWT token
-      const userId = req.user._id;
+      const userId = req.userId;
 
       // Create a new sales report
       const salesReport = new SalesReport({

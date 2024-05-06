@@ -1,6 +1,4 @@
 import jwt from "jsonwebtoken";
-import User from "../model/userModel.js";
-import argon2 from "argon2";
 
 const userController = {
   signUp: async (req, res) => {
@@ -42,7 +40,7 @@ const userController = {
       }
 
       const token = jwt.sign(
-        { id: user._id, phone: user.phone },
+        { userId: user._id, phone: user.phone },
         process.env.JWT_SECRET,
         { expiresIn: "23h" },
       );

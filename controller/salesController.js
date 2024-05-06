@@ -43,8 +43,16 @@ const salesController = {
   // POST /api/sales
   addSalesReport: async (req, res) => {
     try {
-      const { date, tyreSize, comment, quantity, SSP } = req.body;
-      if (!date || !tyreSize || !comment || !quantity || !SSP) {
+      const { date, tyreSize, comment, quantity, SSP, vehicle } = req.body;
+      if (
+        !date ||
+        !tyreSize ||
+        !comment ||
+        !quantity ||
+        !SSP ||
+        !vehicle ||
+        !location
+      ) {
         return res.status(400).json({ message: "Required fields are missing" });
       }
 
@@ -55,7 +63,7 @@ const salesController = {
       const salesReport = new SalesReport({
         date,
         user: userId, // Set the user reference
-        sales: [{ tyreSize, comment, quantity, SSP }],
+        sales: [{ tyreSize, comment, quantity, SSP, vehicle, location }],
       });
       await salesReport.save();
 
@@ -73,6 +81,8 @@ const salesController = {
         comment,
         quantity,
         SSP,
+        vehicle,
+        location,
       });
       await stockReport.save();
 

@@ -48,14 +48,14 @@ const salesController = {
         return res.status(400).json({ message: "Required fields are missing" });
       }
 
-      // Get the user ID from the request (assuming it's set in the authentication middleware)
+      // Get the user ID from the JWT token
       const userId = req.user._id;
 
       // Create a new sales report
       const salesReport = new SalesReport({
         date,
         user: userId, // Set the user reference
-        sales: [{ date, tyreSize, comment, quantity, SSP }],
+        sales: [{ tyreSize, comment, quantity, SSP }],
       });
       await salesReport.save();
 

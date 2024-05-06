@@ -27,6 +27,10 @@ const stockItemSchema = new Schema({
     type: String,
     required: true,
   },
+  amount: {
+    type: Number,
+    required: true,
+  },
 });
 
 const stockReportSchema = new Schema({
@@ -62,6 +66,10 @@ const stockReportSchema = new Schema({
         required: true,
       },
       SSP: {
+        type: Number,
+        required: true,
+      },
+      amount: {
         type: Number,
         required: true,
       },

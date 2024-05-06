@@ -182,11 +182,9 @@ const stockController = {
         existingStockReport.status = "closed-stock";
         await existingStockReport.save();
 
-        res
-          .status(200)
-          .json({
-            message: "Existing stock updated to closed-stock successfully",
-          });
+        res.status(200).json({
+          message: "Existing stock updated to closed-stock successfully",
+        });
       });
     } catch (error) {
       console.error(error);

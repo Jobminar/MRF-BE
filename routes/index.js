@@ -28,6 +28,7 @@ router.post("/add-stock", stockController.addStock); // Add new tires to the sto
 router.post("/sell-stock", stockController.sellTyresFromStock); // Reduce stock based on sales
 router.get("/closed-stock/:date", stockController.getClosedStock); // Get closed stock report
 router.get("/open-stock/:date", stockController.getOpenStock); // Get open stock report
+router.post("/admin-logout", stockController.updateExistingStockToClosed);
 
 // Routes for sales reports
 router.get("/sales-report/:date", salesController.getSalesReportByDate);

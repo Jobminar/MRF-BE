@@ -116,6 +116,7 @@ const stockController = {
       res.status(500).json({ error: "Failed to get closed-stock report" });
     }
   },
+
   getOpenStock: async (req, res) => {
     try {
       stockController.verifyToken(req, res, async () => {
@@ -127,19 +128,12 @@ const stockController = {
         });
 
         if (!openStockReport) {
-          // If there is no open stock report for the given date, find the latest closed stock report and change its status to open-stock
-          const latestClosedStockReport = await StockReport.findOne({
+          let latestClosedStockReport = await StockReport.findOne({
             status: "closed-stock",
           }).sort({ date: -1 });
 
-          if (latestClosedStockReport) {
-            latestClosedStockReport.status = "open-stock";
-            await latestClosedStockReport.save();
-
-            openStockReport = latestClosedStockReport;
-          } else {
-            // If there are no closed stock reports, display the existing stock
-            const existingStockReport = await StockReport.findOne({
+          if (!latestClosedStockReport) {
+            let existingStockReport = await StockReport.findOne({
               date,
               status: "existing-stock",
             });
@@ -150,7 +144,15 @@ const stockController = {
               });
             }
 
+            existingStockReport.status = "closed-stock";
+            await existingStockReport.save();
+
             return res.status(200).json(existingStockReport);
+          } else {
+            latestClosedStockReport.status = "open-stock";
+            await latestClosedStockReport.save();
+
+            openStockReport = latestClosedStockReport;
           }
         }
 
@@ -159,6 +161,38 @@ const stockController = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Failed to get open-stock report" });
+    }
+  },
+  updateExistingStockToClosed: async (req, res) => {
+    try {
+      stockController.verifyToken(req, res, async () => {
+        const { date } = req.body;
+
+        let existingStockReport = await StockReport.findOne({
+          date,
+          status: "existing-stock",
+        });
+
+        if (!existingStockReport) {
+          return res.status(404).json({
+            message: "Existing stock report not found for the given date",
+          });
+        }
+
+        existingStockReport.status = "closed-stock";
+        await existingStockReport.save();
+
+        res
+          .status(200)
+          .json({
+            message: "Existing stock updated to closed-stock successfully",
+          });
+      });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Failed to update existing stock to closed-stock" });
     }
   },
 };

@@ -31,7 +31,7 @@ router.get("/open-stock/:date", stockController.getOpenStock); // Get open stock
 router.post("/admin-logout", stockController.updateExistingStockToClosed);
 
 // Routes for sales reports
-router.get("/sales-report/:date", salesController.getSalesReportByDate);
 router.post("/add-sales-report", salesController.addSalesReport);
-
+router.get("/sales", salesController.getAllSalesReports); // Get all sales reports
+router.get("/sales/:date", salesController.getSalesReportByDate); // Get sales report by date
 export default router;

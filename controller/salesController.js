@@ -7,6 +7,18 @@ const salesController = {
   verifyToken: authMiddleware,
 
   // Get sales report for a specific date
+
+  getAllSalesReports: async (req, res) => {
+    try {
+      // Find all sales reports
+      const allSalesReports = await SalesReport.find();
+
+      res.status(200).json(allSalesReports);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to get all sales reports" });
+    }
+  },
   // GET /api/sales/:date
   getSalesReportByDate: async (req, res) => {
     try {
@@ -27,7 +39,6 @@ const salesController = {
       res.status(500).json({ error: "Failed to get sales report" });
     }
   },
-
   // Add a new sales report
   // POST /api/sales
   addSalesReport: async (req, res) => {

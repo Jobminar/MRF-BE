@@ -43,7 +43,8 @@ const salesController = {
   // POST /api/sales
   addSalesReport: async (req, res) => {
     try {
-      const { date, tyreSize, comment, quantity, SSP, vehicle } = req.body;
+      const { date, tyreSize, comment, quantity, SSP, vehicle, location } =
+        req.body;
       if (
         !date ||
         !tyreSize ||
